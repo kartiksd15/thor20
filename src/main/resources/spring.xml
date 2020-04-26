@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation=" http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+
+	<context:component-scan base-package="com.xworkz.register" />
+	
+	<bean id="multipartResolver" 
+	class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+	<bean class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
+		id="localSessionFactoryBean">
+		<property name="dataSource" ref="driverManagerDataSource" />
+		<property name="packagesToScan" value="com.xworkz.register.Entity" />
+	</bean>
+
+
+	<bean class=" org.springframework.jdbc.datasource.DriverManagerDataSource"
+		id="driverManagerDataSource">
+		<constructor-arg value="jdbc:mysql://localhost:3306/kartik_db" />
+		<constructor-arg value="root" />
+		<constructor-arg value="root123" />
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+
+	</bean>
+
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+</beans>

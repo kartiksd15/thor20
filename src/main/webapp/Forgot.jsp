@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 <script
@@ -22,7 +22,6 @@
 </style>
 </head>
 <body>
-
 	<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
 	<div class="container-fluid">
 		<div class="navbar-header">
@@ -30,13 +29,44 @@
 					CM</strong></a>
 
 		</div>
-		</div>
-		</nav>
 
-<h3> ${BlockLogin}</h3>
+		<ul class="nav navbar-nav navbar-right ">
+			<li><a href="index.jsp">Home</a></li>
+		</ul>
+
+		<ul class="nav navbar-nav navbar-right ">
+			<li><a href="Login.jsp">Login</a></li>
+		</ul>
+	</div>
+	</nav>
+	
+	
+	
+	<h3>Enter the email and set new password</h3>
+	
+		<form action="Reset.do" method="post">
+			<table>
+
+				<tr>
+					<td>Email:</td>
+					<td><input type="email" name="email"></td>
+				</tr>
+	
+
+			</table>
+
+			<td><input type="submit" value="Reset"></td>
 
 
-
+		</form>
+	
+	
+	
+	<h3> ${Message}</h3>
+	
+	
+	
+	
 		<!-- footer -->
 	<div class="footer-copyright py-3 text-center">
 		<div class="footer-bottom-text">

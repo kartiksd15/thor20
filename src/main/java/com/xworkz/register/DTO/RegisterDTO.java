@@ -11,6 +11,7 @@ public class RegisterDTO implements Serializable {
 	private String course;
 	private String entry;
 	private String password;
+	
 
 	public RegisterDTO() {
 		System.out.println("created\t:" + this.getClass().getSimpleName());

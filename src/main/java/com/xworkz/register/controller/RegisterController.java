@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.xworkz.register.DTO.ForgotPasswordDTO;
 import com.xworkz.register.DTO.LoginDTO;
 import com.xworkz.register.DTO.RegisterDTO;
 import com.xworkz.register.Entity.RegisterEntity;
@@ -45,35 +46,44 @@ public class RegisterController {
 	@RequestMapping("/login.do")
 	public String onLogin(LoginDTO loginDTO, Model model) {
 
-		String page = "";
-		System.out.println("invoking login...!");
-		String mail = loginDTO.getEmail();
-		System.out.println("login mail:" + mail);
+		System.out.println("invoking onLogin...!");
 
-		String pwd = loginDTO.getPassword();
-		System.out.println("login password:.." + pwd);
+		Integer datafrmDB = this.serviceRegister.validateLogin(loginDTO.getEmail(), loginDTO.getPassword());
+		System.out.println("data from db:" + datafrmDB);
 
-		try {
-			String datafrmDB = this.serviceRegister.validateLogin(loginDTO);
-			System.out.println("data from db:" + datafrmDB);
+		if (datafrmDB == 0) {
+			System.out.println("invoking login:");
+			System.out.println("model attribute:" + loginDTO);
 
-			if (datafrmDB.equals("loginSuccess")) {
-				model.addAttribute("Login", "SignIn Succesfuly");
-				return "Home";
-			} else if (datafrmDB.equals("loginFailed")) {
-				System.out.println("email or password is wrong");
-				model.addAttribute("LoginMsg", "email or password is wrong");
-				return "Login";
-			} else {
-				System.out.println("your account has been lock due to wrong password..:");
-				model.addAttribute("BlockLogin", "your account has been lock due to wrong password..:");
-				return "BlockLogin";
-			}
-		} catch (HibernateException e) {
-			e.printStackTrace();
+			model.addAttribute("Message", "User loggedIn succefully:\n" + "User.ID :" + loginDTO.getEmail() + "\n"
+					+ "Password: " + loginDTO.getPassword());
+			return "Home";
+
+		} else if (datafrmDB <= 3) {
+
+			model.addAttribute("Message", "Please check entered Email and Password ");
+			return "Login";
+		} else {
+			model.addAttribute("Message", "You have made already 3 attempts, Please try resetting password");
+			return "Login";
 		}
-		return "Login";
-
 	}
+	
+	@RequestMapping("/Reset.do")
+	public String setForgotPassword(ForgotPasswordDTO forgotPasswordDTO,Model model) {
+		System.out.println("invoking setForgotPassword:");
+	
+		boolean isValid = this.serviceRegister.setForgotPswd(forgotPasswordDTO);
+		System.out.println("isValid inside the controller"+isValid);
+		if (isValid == true) {
+			System.out.println("invoking register:");
+			System.out.println("model attribute:" + forgotPasswordDTO);
 
+			model.addAttribute("Message", "password reset successful");
+			return "GetfwgtPwrd";
+		} else {
+			model.addAttribute("Message", "password reset not successful: ");
+			return "Forgot";
+		}
+	}
 }

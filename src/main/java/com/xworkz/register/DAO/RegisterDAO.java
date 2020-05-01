@@ -1,17 +1,22 @@
 package com.xworkz.register.DAO;
 
-import com.xworkz.register.DTO.LoginDTO;
 import com.xworkz.register.Entity.RegisterEntity;
 
 public interface RegisterDAO {
 	public void saveAndRegister(RegisterEntity entity);
-	
+
 	public boolean validateEmailExitOrNo(String email);
-	
+
 	public boolean validateUserIDExitOrNo(String userId);
+
+	public boolean loginCheck(String loginEmail, String loginPassword);
+
+	public Integer addAttempts(String loginEmail, int noOfAttempts);
+
+	public Integer checkAttempts(String loginEmail);
 	
-	public RegisterEntity feachEmail(String mail);
+	//public boolean checkEmail(String email);
 	
-	public int updateLoginCount(int loginCount, int id);
+	public boolean updatePassword(RegisterEntity registerEntity);
 
 }

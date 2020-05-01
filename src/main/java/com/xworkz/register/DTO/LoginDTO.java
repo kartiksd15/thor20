@@ -2,6 +2,10 @@ package com.xworkz.register.DTO;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+@Setter
+@Getter
 public class LoginDTO implements Serializable{
 
 	private String email;

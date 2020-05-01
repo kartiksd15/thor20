@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.xworkz.register.DAO.RegisterDAO;
+import com.xworkz.register.DTO.ForgotPasswordDTO;
 import com.xworkz.register.DTO.LoginDTO;
 import com.xworkz.register.DTO.RegisterDTO;
 import com.xworkz.register.Entity.RegisterEntity;
@@ -117,47 +118,84 @@ public class ServiceRegisterImpl implements ServiceRegister {
 	}
 
 	@Override
-	public String validateLogin(LoginDTO loginDTO) {
-		System.out.println("invoking validatelogin...:");
-		boolean flag = false;
-		try {
-			RegisterEntity registerEntity = this.registerDAO.feachEmail(loginDTO.getEmail());
-			System.out.println("invoke registerEntity:" + registerEntity);
+	public Integer validateLogin(String loginEmail, String loginPassword) {
 
-			if (Objects.nonNull(registerEntity)) {
-				return "loginFailed";
+		boolean isEmailPasswordValid = this.registerDAO.loginCheck(loginEmail, loginPassword); // true
+		Integer attemptCount = this.registerDAO.checkAttempts(loginEmail); // no of attempts
+		System.out.println("value of isEmailPasswordValid :" + isEmailPasswordValid);
+		System.out.println("value of checkAttempts :" + attemptCount);
+
+		if (attemptCount <= 3) {
+			if (isEmailPasswordValid == false) {
+
+				System.out.println("inside validateLogin in ServiceDAOImpl with email and password..." + loginEmail
+						+ "/t" + loginPassword + "/n");
+				System.out.println("Check Email or Password......");
+				attemptCount++;
+				System.out.println("number of attempts :" + attemptCount);
+				return this.registerDAO.addAttempts(loginEmail, attemptCount);
 			}
 
-			String pwdfmDB = registerEntity.getPassword();
-			System.out.println("password from db" + pwdfmDB);
-			int idfmDB = registerEntity.getId();
-			System.out.println("id frm db:" + idfmDB);
-
-			int countPassWordAttempt = registerEntity.getLoginCount();
-			System.out.println(countPassWordAttempt);
-			if (countPassWordAttempt >= 0 && countPassWordAttempt < 3) {
-				if (loginDTO.getPassword().equals(pwdfmDB)) {
-					System.out.println("password is match..");
-					flag = true;
-				} else {
-					countPassWordAttempt++;
-					System.out.println("password is faild");
-					this.registerDAO.updateLoginCount(countPassWordAttempt, idfmDB);
-				}
-
-			} else {
-				if (countPassWordAttempt == 3) {
-					return "blockLogin";
-				}
-			}
-			if (flag == true) {
-				return "loginSuccess";
-			}
-
-		} catch (HibernateException e) {
-			e.printStackTrace();
 		}
-		return "loginFailed";
+
+		if (attemptCount > 3) {
+			System.out.println("you have attempted more than 3 times..");
+
+			return attemptCount;
+		}
+
+		return 0;
+	}
+
+	@Override
+	public boolean setForgotPswd(ForgotPasswordDTO forgotPasswordDTO) {
+		System.out.println("invoking setforgotpaswrd...");
+		boolean flag = false;
+
+		String em = forgotPasswordDTO.getEmail();
+		if (em != null && !em.isEmpty()) {
+			// boolean e = this.registerDAO.checkEmail(em);
+			boolean e = this.registerDAO.validateEmailExitOrNo(em);
+			if (e) {
+				flag = false;
+				System.out.println("Email id already exist : " + em);
+
+				String chars = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
+				String password = "";
+				int length = 8;
+
+				Random random = new Random();
+				char[] text = new char[length];
+				for (int i = 0; i < length; i++) {
+					text[i] = chars.charAt(random.nextInt(chars.length()));
+					password += text[i];
+				}
+				System.out.println("system generated password is ..." + password);
+				RegisterEntity registerEntity = new RegisterEntity();
+
+				System.out.println("password set:");
+				System.out.println("New Password saved to DB" + password);
+				System.out.println("here registerDTO objects are send to rsgisterEntity");
+				BeanUtils.copyProperties(forgotPasswordDTO, registerEntity);
+				System.out.println("passed to entity :" + password);
+
+				registerEntity.setPassword(password);
+				registerEntity.setLoginCount(0);
+				this.registerDAO.updatePassword(registerEntity);
+
+				return flag = true;
+
+			}
+
+			return flag = true;
+
+		} else {
+			System.out.println("please enter the exist email.. " + em);
+			flag = false;
+			return flag;
+
+		}
+
 	}
 
 }

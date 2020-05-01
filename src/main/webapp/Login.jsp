@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -39,39 +39,55 @@
 		</ul>
 	</div>
 	</nav>
-	
-	
-	<form action="login.do" method="post">
-		<table>
 
-			<tr>
-				<td>Email:</td>
-				<td><input type="email" name="email"></td>
-			</tr>
-			<tr>
-				<td>Password:</td>
-				<td><input type="text" name="password"></td>
-			</tr>
-		
+	
 
-		</table>
-		
-		<td><input type="submit" value="Login"></td>
-		
-		
-	</form>
-	
-	<h3> ${LoginMsg}</h3>
-	
-		<!-- footer -->
+		<form action="login.do" method="post">
+			<table>
+
+				<tr>
+					<td>Email:</td>
+					<td><input type="email" name="email"></td>
+				</tr>
+				<tr>
+					<td>Password:</td>
+					<td><input type="text" name="password"></td>
+				</tr>
+
+
+			</table>
+
+			<td><input type="submit" value="Login"></td>
+
+
+		</form>
+
+
+	<br>
+
+	<a href="Forgot.jsp">Forgot Password..???</a>
+
+
+
+	<br>
+
+
+	<h3>${Message}</h3>
+
+
+	<br>
+	<br>
+	<br>
+
+	<!-- footer -->
 	<div class="footer-copyright py-3 text-center">
 		<div class="footer-bottom-text">
 			@2020 copyright: <a href="#"><strong>X-WORKZ.com</strong></a>
 		</div>
 
 	</div>
-	
-	
-	
+
+
+
 </body>
 </html>

@@ -8,8 +8,13 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @Table(name = "registration_table")
+@Setter
+@Getter
 public class RegisterEntity {
 
 	@Id
@@ -30,7 +35,7 @@ public class RegisterEntity {
 	@Column(name = "password")
 	private String password;
 	@Column(name="loginCount")
-	private int loginCount;
+	private Integer loginCount;
 
 	public RegisterEntity() {
 		System.out.println("created:\t" + this.getClass().getSimpleName());

@@ -2,7 +2,11 @@ package com.xworkz.register.DTO;
 
 import java.io.Serializable;
 
+import org.apache.log4j.Logger;
+
 public class RegisterDTO implements Serializable {
+	
+	private static final Logger log=Logger.getLogger(RegisterDTO.class);
 
 	private int id;
 	private String userId;
@@ -14,7 +18,7 @@ public class RegisterDTO implements Serializable {
 	
 
 	public RegisterDTO() {
-		System.out.println("created\t:" + this.getClass().getSimpleName());
+		log.info("created\t:" + this.getClass().getSimpleName());
 	}
 
 	public String getUserId() {

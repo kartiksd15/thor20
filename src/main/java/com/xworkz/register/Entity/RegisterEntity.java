@@ -6,7 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.log4j.Logger;
 import org.hibernate.annotations.GenericGenerator;
+
+import com.xworkz.register.DTO.ForgotPasswordDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,9 +39,11 @@ public class RegisterEntity {
 	private String password;
 	@Column(name="loginCount")
 	private Integer loginCount;
+	
+	private static final Logger log=Logger.getLogger(RegisterEntity.class);
 
 	public RegisterEntity() {
-		System.out.println("created:\t" + this.getClass().getSimpleName());
+		log.info("created:\t" + this.getClass().getSimpleName());
 	}
 
 	public String getUserId() {

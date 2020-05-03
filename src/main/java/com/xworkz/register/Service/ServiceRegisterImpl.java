@@ -1,8 +1,8 @@
 package com.xworkz.register.Service;
 
-import java.util.Objects;
 import java.util.Random;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 
 import org.springframework.beans.BeanUtils;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.xworkz.register.DAO.RegisterDAO;
 import com.xworkz.register.DTO.ForgotPasswordDTO;
-import com.xworkz.register.DTO.LoginDTO;
+
 import com.xworkz.register.DTO.RegisterDTO;
 import com.xworkz.register.Entity.RegisterEntity;
 
@@ -20,12 +20,14 @@ public class ServiceRegisterImpl implements ServiceRegister {
 	@Autowired
 	private RegisterDAO registerDAO;
 
+	private static final Logger log = Logger.getLogger(ServiceRegisterImpl.class);
+
 	public ServiceRegisterImpl() {
-		System.out.println("created:\t" + this.getClass().getSimpleName());
+		log.info("created:\t" + this.getClass().getSimpleName());
 	}
 
 	public boolean validateAndSave(RegisterDTO registerDTO) {
-		System.out.println("invoking validateAndSave: ");
+		log.info("invoking validateAndSave: ");
 		boolean flag = false;
 
 		String userid = registerDTO.getUserId();
@@ -33,13 +35,13 @@ public class ServiceRegisterImpl implements ServiceRegister {
 			boolean valid = this.registerDAO.validateUserIDExitOrNo(userid);
 			if (valid) {
 				flag = false;
-				System.out.println("userid is already exist: " + userid);
+				log.info("userid is already exist: " + userid);
 
 				return flag;
 			}
 
 		} else {
-			System.out.println("enter userid once again userid" + userid);
+			log.info("enter userid once again userid" + userid);
 			flag = false;
 			return flag;
 		}
@@ -49,48 +51,48 @@ public class ServiceRegisterImpl implements ServiceRegister {
 			boolean e = this.registerDAO.validateEmailExitOrNo(em);
 			if (e) {
 				flag = false;
-				System.out.println("Email id already exist : " + em);
+				log.info("Email id already exist : " + em);
 
 				return flag;
 			}
 		} else {
-			System.out.println("please enter the  different email.. " + em);
+			log.info("please enter the  different email.. " + em);
 			flag = false;
 			return flag;
 		}
 
 		long ph = registerDTO.getPhoneNo();
 		if (ph >= 10) {
-			System.out.println("phone is valid" + ph);
+			log.info("phone is valid" + ph);
 			flag = true;
 		} else {
-			System.out.println("phone num is not valid" + ph);
+			log.info("phone num is not valid" + ph);
 		}
 
 		String course = registerDTO.getCourse();
 		if (!course.isEmpty()) {
-			System.out.println("selected course is valid" + course);
+			log.info("selected course is valid" + course);
 			flag = true;
 		} else {
-			System.out.println("select any one course:" + course);
+			log.info("select any one course:" + course);
 			flag = false;
 			return flag;
 		}
 
 		String userEntry = registerDTO.getEntry();
 		if ("yes".equals(userEntry)) {
-			System.out.println("select entry is valid" + userEntry);
+			log.info("select entry is valid" + userEntry);
 
 			flag = true;
 		} else {
-			System.out.println("select agree button,then only your registration will be complited" + userEntry);
+			log.info("select agree button,then only your registration will be complited" + userEntry);
 			flag = false;
 			return flag;
 
 		}
 
 		if (flag == true) {
-			System.out.println("all the feilds are valid save in DB: " + flag);
+			log.info("all the feilds are valid save in DB: " + flag);
 
 			String chars = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
 			String password = "";
@@ -102,14 +104,14 @@ public class ServiceRegisterImpl implements ServiceRegister {
 				text[i] = chars.charAt(random.nextInt(chars.length()));
 				password += text[i];
 			}
-			System.out.println("system generated password is ..." + password);
+			log.info("system generated password is ..." + password);
 			RegisterEntity registerEntity = new RegisterEntity();
 
-			System.out.println("password set:");
-			System.out.println("Password saved to DB" + password);
-			System.out.println("here registerDTO objects are send to rsgisterEntity");
+			log.info("password set:");
+			log.info("Password saved to DB" + password);
+			log.info("here registerDTO objects are send to rsgisterEntity");
 			BeanUtils.copyProperties(registerDTO, registerEntity);
-			System.out.println("passed to entity :" + password);
+			log.info("passed to entity :" + password);
 
 			registerEntity.setPassword(password);
 			this.registerDAO.saveAndRegister(registerEntity);
@@ -122,24 +124,24 @@ public class ServiceRegisterImpl implements ServiceRegister {
 
 		boolean isEmailPasswordValid = this.registerDAO.loginCheck(loginEmail, loginPassword); // true
 		Integer attemptCount = this.registerDAO.checkAttempts(loginEmail); // no of attempts
-		System.out.println("value of isEmailPasswordValid :" + isEmailPasswordValid);
-		System.out.println("value of checkAttempts :" + attemptCount);
+		log.info("value of isEmailPasswordValid :" + isEmailPasswordValid);
+		log.info("value of checkAttempts :" + attemptCount);
 
 		if (attemptCount <= 3) {
 			if (isEmailPasswordValid == false) {
 
-				System.out.println("inside validateLogin in ServiceDAOImpl with email and password..." + loginEmail
-						+ "/t" + loginPassword + "/n");
-				System.out.println("Check Email or Password......");
+				log.info("inside validateLogin in ServiceDAOImpl with email and password..." + loginEmail + "/t"
+						+ loginPassword + "/n");
+				log.info("Check Email or Password......");
 				attemptCount++;
-				System.out.println("number of attempts :" + attemptCount);
+				log.info("number of attempts :" + attemptCount);
 				return this.registerDAO.addAttempts(loginEmail, attemptCount);
 			}
 
 		}
 
 		if (attemptCount > 3) {
-			System.out.println("you have attempted more than 3 times..");
+			log.info("you have attempted more than 3 times..");
 
 			return attemptCount;
 		}
@@ -149,16 +151,16 @@ public class ServiceRegisterImpl implements ServiceRegister {
 
 	@Override
 	public boolean setForgotPswd(ForgotPasswordDTO forgotPasswordDTO) {
-		System.out.println("invoking setforgotpaswrd...");
+		log.info("invoking setforgotpaswrd...");
 		boolean flag = false;
 
 		String em = forgotPasswordDTO.getEmail();
 		if (em != null && !em.isEmpty()) {
-			// boolean e = this.registerDAO.checkEmail(em);
+		
 			boolean e = this.registerDAO.validateEmailExitOrNo(em);
 			if (e) {
 				flag = false;
-				System.out.println("Email id already exist : " + em);
+				log.info("Email id already exist : " + em);
 
 				String chars = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
 				String password = "";
@@ -170,14 +172,14 @@ public class ServiceRegisterImpl implements ServiceRegister {
 					text[i] = chars.charAt(random.nextInt(chars.length()));
 					password += text[i];
 				}
-				System.out.println("system generated password is ..." + password);
+				log.info("system generated password is ..." + password);
 				RegisterEntity registerEntity = new RegisterEntity();
 
-				System.out.println("password set:");
-				System.out.println("New Password saved to DB" + password);
-				System.out.println("here registerDTO objects are send to rsgisterEntity");
+				log.info("password set:");
+				log.info("New Password saved to DB : " + password);
+				log.info("here registerDTO objects are send to rsgisterEntity");
 				BeanUtils.copyProperties(forgotPasswordDTO, registerEntity);
-				System.out.println("passed to entity :" + password);
+				log.info("passed to entity :" + password);
 
 				registerEntity.setPassword(password);
 				registerEntity.setLoginCount(0);
@@ -190,7 +192,7 @@ public class ServiceRegisterImpl implements ServiceRegister {
 			return flag = true;
 
 		} else {
-			System.out.println("please enter the exist email.. " + em);
+			log.info("please enter the exist email.. " + em);
 			flag = false;
 			return flag;
 

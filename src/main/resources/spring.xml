@@ -18,15 +18,18 @@
 		<property name="dataSource" ref="driverManagerDataSource" />
 		<property name="packagesToScan" value="com.xworkz.register.Entity" />
 	</bean>
-
-
-	<bean class=" org.springframework.jdbc.datasource.DriverManagerDataSource"
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		id="propertyPlaceholderConfigurer">
+		<property name="location" value="classpath:/mysql.properties"/>
+	</bean>
+		
+	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource"
 		id="driverManagerDataSource">
-		<constructor-arg value="jdbc:mysql://localhost:3306/kartik_db" />
-		<constructor-arg value="root" />
-		<constructor-arg value="root123" />
-		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
-
+		<constructor-arg value="${driverManagerDataSource.url}" />
+		<constructor-arg value="${driverManagerDataSource.name}" />
+		<constructor-arg value="${driverManagerDataSource.password}" />
+		<property name="driverClassName" value="${driverManagerDataSource.driverClassName}" />
 	</bean>
 
 
